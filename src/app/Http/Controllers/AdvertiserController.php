@@ -44,7 +44,7 @@ class AdvertiserController extends Controller
         $offer->advertiser_id = auth()->id();
         $offer->save();
 
-        return redirect()->route('advertiser.dashboard')->with('success', 'Оффер успешно создан!');
+        return redirect()->route('advertiser.dashboard');
     }
 
     public function deactivateOffer($id)
@@ -52,7 +52,7 @@ class AdvertiserController extends Controller
         $offer = Offer::where('advertiser_id', Auth::id())->findOrFail($id);
         $offer->update(['status' => 'inactive']);
 
-        return redirect()->route('advertiser.dashboard')->with('success', 'Offer деактивирован.');
+        return redirect()->route('advertiser.dashboard');
     }
     
     public function reactivateOffer($id)
@@ -60,6 +60,6 @@ class AdvertiserController extends Controller
         $offer = Offer::where('advertiser_id', Auth::id())->findOrFail($id);
         $offer->update(['status' => 'active']);
 
-        return redirect()->route('advertiser.dashboard')->with('success', 'Offer активирован.');
+        return redirect()->route('advertiser.dashboard');
     }
 }

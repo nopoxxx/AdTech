@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Subscription extends Model
 {
@@ -13,13 +14,32 @@ class Subscription extends Model
         'offer_id',
         'webmaster_id',
         'custom_url',
-        'cost_per_click',
         'active',
     ];
 
     protected $casts = [
         'active' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($subscription) {
+            if (empty($subscription->custom_url)) {
+                $subscription->custom_url = self::generateUniqueToken();
+            }
+        });
+    }
+
+    protected static function generateUniqueToken(): string
+    {
+        do {
+            $token = Str::random(12);
+        } while (self::where('custom_url', $token)->exists());
+
+        return $token;
+    }
 
     public function offer()
     {

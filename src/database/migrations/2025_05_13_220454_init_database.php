@@ -23,7 +23,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('offer_id')->constrained('offers')->onDelete('cascade');
             $table->foreignId('webmaster_id')->constrained('users')->onDelete('cascade');
-            $table->decimal('custom_cpc', 8, 4);
             $table->string('custom_url')->unique();
             $table->boolean('active')->default(true);
             $table->timestamps();

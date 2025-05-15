@@ -11,39 +11,52 @@ class WebmasterController extends Controller
 {
     public function index()
     {
-        $subscriptions = Subscription::where('user_id', Auth::id())->get();
+        $subscriptions = Subscription::where('webmaster_id', Auth::id())
+            ->with('offer')
+            ->get();
+    
+        $subscribedOfferIds = $subscriptions->pluck('offer_id');
+    
+        $availableOffers = Offer::whereNotIn('id', $subscribedOfferIds)
+            ->where('status', 'active')
+            ->get();
+    
         $stats = [];
-
+    
         foreach ($subscriptions as $subscription) {
-            $offer = $subscription->offer;
-            $stats[$offer->id] = [
-                'daily' => $subscription->clicks()->whereDate('created_at', today())->count(),
-                'monthly' => $subscription->clicks()->whereMonth('created_at', now()->month)->count(),
-                'yearly' => $subscription->clicks()->whereYear('created_at', now()->year)->count(),
+            $stats[$subscription->offer->id] = [
+                'daily' => $subscription->clickLogs()->whereDate('clicked_at', today())->count(),
+                'monthly' => $subscription->clickLogs()->whereMonth('clicked_at', now()->month)->count(),
+                'yearly' => $subscription->clickLogs()->whereYear('clicked_at', now()->year)->count(),
             ];
-        }
-
-        return view('webmaster.dashboard', compact('subscriptions', 'stats'));
+        }        
+    
+        return view('webmaster.dashboard', compact('subscriptions', 'stats', 'availableOffers'));
     }
 
     public function subscribeOffer(Request $request, $offerId)
     {
-        $validated = $request->validate([
-            'cost_per_click' => 'required|numeric',
-        ]);
-
+        $offer = Offer::findOrFail($offerId);
+    
+        $existing = Subscription::where('webmaster_id', Auth::id())
+                                ->where('offer_id', $offerId)
+                                ->first();
+        if ($existing) {
+            return redirect()->route('webmaster.dashboard');
+        }
+    
         $subscription = Subscription::create([
-            'user_id' => Auth::id(),
+            'webmaster_id' => Auth::id(),
             'offer_id' => $offerId,
-            'cost_per_click' => $validated['cost_per_click'],
         ]);
-
+    
         return redirect()->route('webmaster.dashboard');
     }
+    
 
     public function unsubscribeOffer($offerId)
     {
-        $subscription = Subscription::where('user_id', Auth::id())
+        $subscription = Subscription::where('webmaster_id', Auth::id())
                                     ->where('offer_id', $offerId)
                                     ->firstOrFail();
         $subscription->delete();

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdvertiserController;
 use App\Http\Controllers\WebmasterController;
+use App\Http\Controllers\LinkRedirectController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,3 +30,5 @@ Route::middleware('auth')->prefix('webmaster')->name('webmaster.')->group(functi
     Route::post('/subscribe/{offerId}', [WebmasterController::class, 'subscribeOffer'])->name('subscribeOffer');
     Route::post('/unsubscribe/{offerId}', [WebmasterController::class, 'unsubscribeOffer'])->name('unsubscribeOffer');
 });
+
+Route::get('/go/{custom_url}', LinkRedirectController::class)->name('redirect');
