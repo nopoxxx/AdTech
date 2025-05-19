@@ -19,9 +19,9 @@ class AdvertiserController extends Controller
             $stats = [];
             foreach ($offers as $offer) {
                 $stats[$offer->id] = [
-                    'daily' => $offer->clickLogs()->whereDate('click_logs.created_at', today())->count(),
-                    'monthly' => $offer->clickLogs()->whereMonth('click_logs.created_at', now()->month)->count(),
-                    'yearly' => $offer->clickLogs()->whereYear('click_logs.created_at', now()->year)->count(),
+                    'daily' => $offer->clickLogs()->whereDate('clicked_at', today())->count(),
+                    'monthly' => $offer->clickLogs()->whereMonth('clicked_at', now()->month)->count(),
+                    'yearly' => $offer->clickLogs()->whereYear('clicked_at', now()->year)->count(),
                 ];
             }
         }

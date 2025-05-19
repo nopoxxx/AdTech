@@ -43,14 +43,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'username' => 'required|string|exists:users,username',
-            'password' => 'required|string',
-        ]);
-
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt([
+            'username' => $request->username,
+            'password' => $request->password,
+        ])) {
             $request->session()->regenerate();
-
+        
             return Auth::user()->role == 'advertiser'
                 ? redirect()->route('advertiser.dashboard')
                 : redirect()->route('webmaster.dashboard');

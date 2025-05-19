@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdvertiserController;
 use App\Http\Controllers\WebmasterController;
 use App\Http\Controllers\LinkRedirectController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,3 +34,11 @@ Route::middleware('auth')->prefix('webmaster')->name('webmaster.')->group(functi
 });
 
 Route::get('/go/{custom_url}', LinkRedirectController::class)->name('redirect');
+
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+Route::post('/admin/login', [AdminController::class, 'login']);
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::patch('/users/{user}/activate', [AdminController::class, 'activate'])->name('admin.activate');
+Route::patch('/users/{user}/deactivate', [AdminController::class, 'deactivate'])->name('admin.deactivate');
+

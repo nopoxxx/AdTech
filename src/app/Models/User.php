@@ -41,13 +41,4 @@ class User extends Authenticatable
     {
         return $this->role === 'webmaster';
     }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            $user->password = bcrypt($user->password);
-        });
-    }
 }
