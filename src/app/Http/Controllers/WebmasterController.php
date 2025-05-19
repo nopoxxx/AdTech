@@ -42,7 +42,7 @@ class WebmasterController extends Controller
                                 ->where('offer_id', $offerId)
                                 ->first();
         if ($existing) {
-            return redirect()->route('webmaster.dashboard');
+            return redirect()->route('dashboard');
         }
     
         $subscription = Subscription::create([
@@ -50,7 +50,7 @@ class WebmasterController extends Controller
             'offer_id' => $offerId,
         ]);
     
-        return redirect()->route('webmaster.dashboard');
+        return redirect()->route('dashboard');
     }
     
 
@@ -61,6 +61,6 @@ class WebmasterController extends Controller
                                     ->firstOrFail();
         $subscription->delete();
 
-        return redirect()->route('webmaster.dashboard');
+        return redirect()->route('dashboard');
     }
 }

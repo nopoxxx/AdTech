@@ -20,15 +20,25 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        if (auth()->user()->role === 'advertiser') {
+            return app(AdvertiserController::class)->index();
+        } elseif (auth()->user()->role === 'webmaster') {
+            return app(WebmasterController::class)->index();
+        } else {
+            abort(403);
+        }
+    })->name('dashboard');
+});
+
 Route::middleware('auth')->prefix('advertiser')->name('advertiser.')->group(function () {
-    Route::get('/dashboard', [AdvertiserController::class, 'index'])->name('dashboard');
     Route::post('/create-offer', [AdvertiserController::class, 'createOffer'])->name('createOffer');
     Route::post('/deactivate-offer/{id}', [AdvertiserController::class, 'deactivateOffer'])->name('deactivateOffer');
     Route::post('/reactivate-offer/{id}', [AdvertiserController::class, 'reactivateOffer'])->name('reactivateOffer');
 });
 
 Route::middleware('auth')->prefix('webmaster')->name('webmaster.')->group(function () {
-    Route::get('/dashboard', [WebmasterController::class, 'index'])->name('dashboard');
     Route::post('/subscribe/{offerId}', [WebmasterController::class, 'subscribeOffer'])->name('subscribeOffer');
     Route::post('/unsubscribe/{offerId}', [WebmasterController::class, 'unsubscribeOffer'])->name('unsubscribeOffer');
 });

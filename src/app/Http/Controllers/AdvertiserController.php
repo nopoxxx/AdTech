@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdvertiserController extends Controller
 {
-    // Панель управления рекламодателя
     public function index()
     {
         $offers = Offer::where('advertiser_id', Auth::id())->get();
@@ -44,7 +43,7 @@ class AdvertiserController extends Controller
         $offer->advertiser_id = auth()->id();
         $offer->save();
 
-        return redirect()->route('advertiser.dashboard');
+        return redirect()->route('dashboard');
     }
 
     public function deactivateOffer($id)
@@ -52,7 +51,7 @@ class AdvertiserController extends Controller
         $offer = Offer::where('advertiser_id', Auth::id())->findOrFail($id);
         $offer->update(['status' => 'inactive']);
 
-        return redirect()->route('advertiser.dashboard');
+        return redirect()->route('dashboard');
     }
     
     public function reactivateOffer($id)
@@ -60,6 +59,6 @@ class AdvertiserController extends Controller
         $offer = Offer::where('advertiser_id', Auth::id())->findOrFail($id);
         $offer->update(['status' => 'active']);
 
-        return redirect()->route('advertiser.dashboard');
+        return redirect()->route('dashboard');
     }
 }

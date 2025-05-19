@@ -37,8 +37,8 @@ class AuthController extends Controller
         Auth::login($user);
 
         return $user->role == 'advertiser'
-            ? redirect()->route('advertiser.dashboard')
-            : redirect()->route('webmaster.dashboard');
+            ? redirect()->route('dashboard')
+            : redirect()->route('dashboard');
     }
 
     public function login(Request $request)
@@ -50,8 +50,8 @@ class AuthController extends Controller
             $request->session()->regenerate();
         
             return Auth::user()->role == 'advertiser'
-                ? redirect()->route('advertiser.dashboard')
-                : redirect()->route('webmaster.dashboard');
+                ? redirect()->route('dashboard')
+                : redirect()->route('dashboard');
         }
 
         return back()->withErrors([
